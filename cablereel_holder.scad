@@ -1,5 +1,7 @@
 $fn = 50;
 
+NOMINAL_THICKNESS = 3/4*25.4;
+
 REEL_INNER_RADIUS = 15;
 REEL_OUTER_RADIUS = 45;
 REEL_THICKNESS = 1;
@@ -12,7 +14,12 @@ GUIDE_CLEARANCE = 10;
 BASE_CLEARANCE_X = 10;
 BASE_CLEARANCE_Z = 10;
 BASE_DEPTH = 100;
-BASE_HEIGHT = 5;
+BASE_HEIGHT = NOMINAL_THICKNESS;
+HOLES_RADIUS = 1.5;
+HOLES_NUM = 8;
+HOLES_CLEARANCE_X = 10;
+PILLAR_WIDTH = NOMINAL_THICKNESS;
+PILLAR_DEPTH = 30;
 
 module reel(
     width,
@@ -40,17 +47,27 @@ rotate([90, 0, 90])
         SPINDLE_RADIUS
     );
 /* guide: */
-translate([0, -(REEL_OUTER_RADIUS+GUIDE_CLEARANCE+GUIDE_WIDTH), 0])
-    cube(
-        [SPINDLE_LENGTH, GUIDE_WIDTH, GUIDE_HEIGHT]
-    );
+difference() {
+    guideY = -(REEL_OUTER_RADIUS+GUIDE_CLEARANCE);
+    translate([0, guideY-GUIDE_WIDTH, 0])
+        cube(
+            [SPINDLE_LENGTH, GUIDE_WIDTH, GUIDE_HEIGHT]
+        );
+    step = (SPINDLE_LENGTH - 2*HOLES_CLEARANCE_X)/(HOLES_NUM - 1);
+    for (i = [0:(HOLES_NUM -1)]) {
+        translate([HOLES_CLEARANCE_X + i*step, guideY, GUIDE_HEIGHT/2]) rotate([90,0,0])
+            cylinder(GUIDE_WIDTH, HOLES_RADIUS, HOLES_RADIUS);
+    }
+}
 /* base plate: */
 baseWidth = SPINDLE_LENGTH + 2*BASE_CLEARANCE_X;
 baseZ = -(REEL_OUTER_RADIUS+BASE_CLEARANCE_Z+REEL_INNER_RADIUS-SPINDLE_RADIUS+BASE_HEIGHT);
 translate([-BASE_CLEARANCE_X, -BASE_DEPTH/2, baseZ])
     cube([baseWidth, BASE_DEPTH, BASE_HEIGHT]);
 /* pillars: */
-
+translate([0, -PILLAR_DEPTH/2, baseZ+BASE_HEIGHT]) rotate([90,0,90])
+    linear_extrude(PILLAR_WIDTH)
+        polygon([[0,0], [PILLAR_DEPTH,0], [PILLAR_DEPTH,50], [PILLAR_DEPTH/2,40], [0,50]]);
 /* reels: */
 color("grey") {
     reelZ = SPINDLE_RADIUS-REEL_INNER_RADIUS;
