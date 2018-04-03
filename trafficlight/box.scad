@@ -22,7 +22,7 @@ module doubleCircleWithText(rOuter, rInner, text) {
 difference() {
     square([180,60]);
     // DMX connectors
-    translate([127,3,0]) union() {
+    translate([120,3,0]) union() {
         // DMX in
         difference() {
             square([22,35]);
@@ -43,10 +43,10 @@ difference() {
         }
     }
     // lights connector
-    translate([108,5,0])
+    translate([101,5,0])
         doubleCircleWithText(8.5, 6, "lights 12");
     // power input unit
-    translate([5,5,0]) union() {
+    translate([10,5,0]) union() {
          // fuseholder
         translate([0,16,0])
             doubleCircleWithText(8, 5.5, "fuse 11");
