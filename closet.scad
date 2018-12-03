@@ -3,11 +3,15 @@ MODULE_OUTERWIDTH = 80;
 MODULE_DEPTH = 50;
 WALL_THICKNESS = 1.8;
 CORNER_SIZE = 4.4;
+CORNER_FRONT_CLEARANCE = 2;
 CLOTHESRAIL_RADIUS = 1;
 CLOTHESRAIL_SPACE = 20;
+DOOR_CLEARANCE = .2;
+DOOR_HOLE_RADIUS = 1.5;
 /* other settings: */
 WALLS = true;
 REFERENCE_OBJECTS = true;
+DOORS = false;
 ROOM_HEIGHT = 290;
 
 module closetModuleCorner(depth) {
@@ -16,10 +20,12 @@ module closetModuleCorner(depth) {
 
 module closetModule(
     outerHeight,
+    door=false,
     outerWidth=MODULE_OUTERWIDTH,
     depth=MODULE_DEPTH
 ) {
-    color("brown") {
+    cornerDepth = depth - CORNER_FRONT_CLEARANCE;
+    color("sandybrown") {
     /* bottom wall */
     cube([outerWidth, depth, WALL_THICKNESS]);
     /* top wall */
@@ -31,26 +37,38 @@ module closetModule(
     translate([outerWidth-WALL_THICKNESS, 0, 0])
         cube([WALL_THICKNESS, depth, outerHeight]);
     /* bottom left corner */
-    translate([WALL_THICKNESS, 0, WALL_THICKNESS])
-        closetModuleCorner(depth);
+    translate([WALL_THICKNESS, CORNER_FRONT_CLEARANCE, WALL_THICKNESS])
+        closetModuleCorner(cornerDepth);
     /* bottom right corner */
-    translate([outerWidth-WALL_THICKNESS-CORNER_SIZE, 0, WALL_THICKNESS])
-        closetModuleCorner(depth);
+    translate([outerWidth-WALL_THICKNESS-CORNER_SIZE, CORNER_FRONT_CLEARANCE, WALL_THICKNESS])
+        closetModuleCorner(cornerDepth);
     /* top left corner */
-    translate([WALL_THICKNESS, 0, outerHeight-WALL_THICKNESS-CORNER_SIZE])
-        closetModuleCorner(depth);
+    translate([WALL_THICKNESS, CORNER_FRONT_CLEARANCE, outerHeight-WALL_THICKNESS-CORNER_SIZE])
+        closetModuleCorner(cornerDepth);
     /* top right corner */
-    translate([outerWidth-WALL_THICKNESS-CORNER_SIZE, 0, outerHeight-WALL_THICKNESS-CORNER_SIZE])
-        closetModuleCorner(depth);
+    translate([outerWidth-WALL_THICKNESS-CORNER_SIZE, CORNER_FRONT_CLEARANCE, outerHeight-WALL_THICKNESS-CORNER_SIZE])
+        closetModuleCorner(cornerDepth);
+    /* door */
+    if (door) {
+    translate([WALL_THICKNESS+DOOR_CLEARANCE, 0, WALL_THICKNESS+DOOR_CLEARANCE])
+    difference() {
+        cube([outerWidth - 2*(WALL_THICKNESS+DOOR_CLEARANCE), WALL_THICKNESS, outerHeight - 2*(WALL_THICKNESS+DOOR_CLEARANCE)]);
+        /* hole */
+        /*translate([10, WALL_THICKNESS, 10])
+        rotate([90,0,0])
+        cylinder(WALL_THICKNESS*3, DOOR_HOLE_RADIUS, DOOR_HOLE_RADIUS, $fn=30);*/
+    }
+    }
     }
 }
 
 module closetModuleWithClothesRail(
     outerHeight,
+    door=false,
     outerWidth=MODULE_OUTERWIDTH,
     depth=MODULE_DEPTH
 ) {
-    closetModule(outerHeight, outerWidth, depth);
+    closetModule(outerHeight, door, outerWidth, depth);
     color("gray")
     translate([0, depth/2, outerHeight-CLOTHESRAIL_SPACE])
     rotate([0,90,0])
@@ -95,8 +113,9 @@ module human() {
 
 width = MODULE_OUTERWIDTH;
 /* first row: boxes */
-closetModule(50);
-translate([width, 0, 0]) closetModule(50);
+height1 = 53.6;
+closetModule(height1);
+translate([width, 0, 0]) closetModule(height1);
 if (REFERENCE_OBJECTS) {
     translate([7,0,0]) plasticBoxStack();
     translate([40,0,0]) plasticBoxStack();
@@ -104,22 +123,21 @@ if (REFERENCE_OBJECTS) {
     translate([121,0,0]) plasticBoxStack();
 };
 /* second row: miscellaneous stuff */
-translate([0, 0, 50]) union() {
-    closetModule(40, width/2);
-    translate([width/2, 0, 0]) closetModule(40);
-    translate([width*1.5, 0, 0]) closetModule(40, width/2);
+height2 = 43.6;
+translate([0, 0, height1]) union() {
+    closetModule(height2, false, width/2);
+    translate([width/2, 0, 0]) closetModule(height2);
+    translate([width*1.5, 0, 0]) closetModule(height2, false, width/2);
 }
 /* third row: clothes rails */
-translate([0,0, 90]) union() {
-    closetModuleWithClothesRail(125);
-    translate([width, 0, 0])
-        closetModuleWithClothesRail(125);
+height3 = 125;
+translate([0,0, height1+height2]) union() {
+    closetModuleWithClothesRail(height3, DOORS, width*2);
 }
 /* fourth row: more misc. stuff */
-translate([0, 0, 215]) union() {
-    closetModule(40, width/2);
-    translate([width/2, 0, 0]) closetModule(40);
-    translate([width*1.5, 0, 0]) closetModule(40, width/2);
+height4 = 43.6;
+translate([0, 0, height1+height2+height3]) union() {
+    closetModule(height4, false, width*2);
 }
 /* human for reference (190cm) */
 if (REFERENCE_OBJECTS) {
