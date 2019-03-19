@@ -3,12 +3,18 @@ CAPNUT_HEIGHT = 8;
 CAPNUT_R1 = 3;
 CAPNUT_R2 = 4;
 CAPNUT_HEXHEIGHT = 3.5;
+/* lower and upper radii: */
 R1 = 150;
 R2 = 50;
+/* number of plates: */
 N = 30;
+/* distance between plates (mid-to-mid) */
 D = 12;
+/* number of nuts per plate: */
 M = 5;
-alpha = 5;
+/* offset angle between nuts: */
+alpha = 13;
+/* diameter of connecting tubes: */
 TUBE_DIAMETER = 6;
 
 L = N*D;
@@ -25,6 +31,7 @@ middleRadii = [for (i = [0:N-1])
     (outerRadii[i] + innerRadii[i])/2];
 
 module capNut() {
+    color("LightGrey") {
     cylinder(
         h=CAPNUT_HEXHEIGHT,
         r=CAPNUT_R2,
@@ -42,17 +49,18 @@ module capNut() {
         center=false,
         $fn=50
     );
+    }
 }
 
 module plateRing(dInner, dOuter) {
-    difference() {
+    color("DimGrey") difference() {
         cylinder(
             h=PLATE_THICKNESS,
             d=dOuter,
             center=false
         );
-        cylinder(
-            h=PLATE_THICKNESS,
+        translate([0,0,-1]) cylinder(
+            h=PLATE_THICKNESS+2,
             d=dInner,
             center=false
         );
@@ -72,11 +80,11 @@ for (i = [0:N-1]) {
         if (i != N-1) {
             rotate([0,0,(i+1)*alpha + j*(360/M)]) translate([middleRadii[i],0,i*D]) {
                 rotate([0,180,0]) capNut();
-                cylinder(
+                color("Silver") cylinder(
                     h=D,
                     d=TUBE_DIAMETER,
                     center=false,
-                $fn=50
+                    $fn=50
                 );
             }
         }
