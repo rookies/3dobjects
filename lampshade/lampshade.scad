@@ -1,11 +1,17 @@
+/*
+ * bulb socket dimensions:
+ *  d=38mm at the fixture
+ *  d=60mm at the bulb
+ */
 PLATE_THICKNESS = 2;
+RING_WIDTH = 30;
 CAPNUT_HEIGHT = 8;
 CAPNUT_R1 = 3;
 CAPNUT_R2 = 4;
 CAPNUT_HEXHEIGHT = 3.5;
 /* lower and upper radii: */
 R1 = 150;
-R2 = 50;
+R2 = 60;
 /* number of plates: */
 N = 30;
 /* distance between plates (mid-to-mid) */
@@ -26,7 +32,7 @@ d = R1;
 outerRadii = [for (i = [0:N-1])
     a*pow(i*D,3)+b*pow(i*D,2)+c*i*D+d];
 innerRadii = [for (r = outerRadii)
-    r - 30];
+    r - RING_WIDTH];
 middleRadii = [for (i = [0:N-1])
     (outerRadii[i] + innerRadii[i])/2];
 
@@ -53,6 +59,7 @@ module capNut() {
 }
 
 module plateRing(dInner, dOuter) {
+    echo(dInner, dOuter);
     color("DimGrey") difference() {
         cylinder(
             h=PLATE_THICKNESS,
@@ -66,6 +73,8 @@ module plateRing(dInner, dOuter) {
         );
     }
 }
+
+echo("NUM", N);
 
 for (i = [0:N-1]) {
     translate([0,0,i*D])
