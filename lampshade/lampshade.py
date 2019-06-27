@@ -4,6 +4,7 @@ import sys, re
 ## Config
 dInnerStock = 7
 dOuterStock = 300
+# TODO: Support different stock sizes?
 
 ## Check command line arguments:
 if len(sys.argv) != 2:
@@ -40,17 +41,20 @@ print(rings)
 stock = []
 while len(rings) > 0:
     # Check if we have space on used stock left:
+    bestStock = -1
     for i in range(len(stock)):
         s = stock[i]
         if (s['dInner'] <= rings[0][0]) and (s['dOuter'] >= rings[0][1]):
-            # Use existing stock:
-            # TODO: Best fit instead of first fit?
-            # TODO: Add some tolerance?
-            s['dOuter'] = rings[0][0]
-            s['rings'].append(rings[0])
-            print(f'Put ring {rings[0]} on stock #{i+1}.')
-            rings.pop(0)
-            break
+            if (bestStock == -1) or (abs(s['dOuter'] - rings[0][1]) < abs(stock[bestStock]['dOuter'] - rings[0][1])):
+                bestStock = i
+    if bestStock != -1:
+        # Use existing stock:
+        # TODO: Best fit instead of first fit?
+        # TODO: Add some tolerance?
+        stock[bestStock]['dOuter'] = rings[0][0]
+        stock[bestStock]['rings'].append(rings[0])
+        print(f'Put ring {rings[0]} on stock #{bestStock+1}.')
+        rings.pop(0)
     else:
         # Create new stock:
         if (rings[0][0] < dInnerStock) or (rings[0][1] > dOuterStock):

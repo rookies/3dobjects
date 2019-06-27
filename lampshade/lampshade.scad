@@ -17,7 +17,7 @@ N = 30;
 /* distance between plates (mid-to-mid) */
 D = 12;
 /* number of nuts per plate: */
-M = 5;
+M = 4;
 /* offset angle between nuts: */
 alpha = 13;
 /* diameter of connecting tubes: */
