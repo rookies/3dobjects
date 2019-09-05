@@ -11,7 +11,7 @@ CAPNUT_R2 = 4;
 CAPNUT_HEXHEIGHT = 3.5;
 /* lower and upper radii: */
 R1 = 150;
-R2 = 60;
+R2 = 65;
 /* number of plates: */
 N = 30;
 /* distance between plates (mid-to-mid) */
