@@ -47,13 +47,14 @@ while len(rings) > 0:
         if (s['dInner'] <= rings[0][0]) and (s['dOuter'] >= rings[0][1]):
             if (bestStock == -1) or (abs(s['dOuter'] - rings[0][1]) < abs(stock[bestStock]['dOuter'] - rings[0][1])):
                 bestStock = i
+    ringFmt = '(Ri=%.1fcm, Ro=%.1fcm)' % (rings[0][0] / 20, rings[0][1] / 20)
     if bestStock != -1:
         # Use existing stock:
         # TODO: Best fit instead of first fit?
         # TODO: Add some tolerance?
         stock[bestStock]['dOuter'] = rings[0][0]
         stock[bestStock]['rings'].append(rings[0])
-        print(f'Put ring {rings[0]} on stock #{bestStock+1}.')
+        print(f'Put ring {ringFmt} on stock #{bestStock+1}.')
         rings.pop(0)
     else:
         # Create new stock:
@@ -64,7 +65,7 @@ while len(rings) > 0:
             'dOuter': rings[0][0],
             'rings': [rings[0]]
         })
-        print(f'Put ring {rings[0]} on new stock #{len(stock)}.')
+        print(f'Put ring {ringFmt} on new stock #{len(stock)}.')
         rings.pop(0)
 for i in range(len(stock)):
     s = stock[i]
