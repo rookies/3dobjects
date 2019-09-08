@@ -1,6 +1,6 @@
 /*
  * bulb socket dimensions:
- *  d=38mm at the fixture
+ *  d=40mm at the fixture
  *  d=60mm at the bulb
  */
 PLATE_THICKNESS = 2;

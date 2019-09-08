@@ -1,5 +1,6 @@
 #!/usr/bin/python3
-import sys, re
+import sys
+from load import load
 
 ## Config
 dInnerStock = 7
@@ -12,29 +13,9 @@ if len(sys.argv) != 2:
     sys.exit(1)
 
 ## Read input file:
-regex1 = re.compile('^ECHO: "NUM", [0-9]+\n$')
-regex2 = re.compile('^ECHO: [0-9]+\.?[0-9]*, [0-9]+\.?[0-9]*\n$')
-num = -1
-rings = []
-with open(sys.argv[1]) as f:
-    for line in f:
-        if re.match(regex1, line):
-            num = int(line.split(',')[1])
-        elif re.match(regex2, line):
-            data = line[6:-1].split(',')
-            dInner = float(data[0])
-            dOuter = float(data[1])
-            rings.append((dInner, dOuter))
+rings = load(sys.argv[1])
 
-## Check if input file is valid:
-if num == -1:
-    print('Error: No NUM line found.')
-    sys.exit(1)
-if num != len(rings):
-    print(f'Error: Expected {num} rings, got {len(rings)}.')
-    sys.exit(1)
-
-## Sort them according to their inner diameters:
+## Sort rings according to their inner diameters:
 rings.sort(key=lambda x: x[0], reverse=True)
 
 print(rings)
