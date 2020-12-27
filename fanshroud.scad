@@ -1,7 +1,7 @@
 CR = 25; /* corner radius */
 WT = 2; /* wall thickness */
-SX = 89+2*WT; /* size X (width) */
-SY = 89+2*WT; /* size Y (depth) */
+SX = 91+2*WT; /* size X (width) */
+SY = 91+2*WT; /* size Y (depth) */
 H = 30; /* height */
 MAW = 10; /* mounting arm width */
 MAT = 2; /* mounting arm thickness */
@@ -12,6 +12,9 @@ SHDIA = 4.4; /* screw hole diameter */
 SMAL = (SX - SHDIS) / 2;
 /* diagonal mounting arm length: */
 DMAL = (SHDIS * sqrt(2) - SX) / 2 + WT;
+/* straight mounting arm width: */
+SMAW = (SY - SHDIS + MAW) / 2;
+/* ^- NOTE: This extends the straight mounting arms to the bottom, allowing upright printing. */
 
 module baseShape(x, y, z) {
     difference() {
@@ -40,12 +43,15 @@ linear_extrude(MAT) for (i = [-1,1], j = [-1,1]) {
     translate([i*SHDIS/2,j*SHDIS/2]) {
         difference() {
             union() {
-                circle(d=MAW, $fn=20);
                 if (j == 1) {
                     /* straight connection */
-                    translate([i*SMAL/2,0]) square([SMAL,MAW], center=true);
+                    translate([0,(SMAW-MAW)/2]) {
+                        circle(d=SMAW, $fn=20);
+                        translate([i*SMAL/2,0]) square([SMAL,SMAW], center=true);
+                    }
                 } else {
                     /* diagonal connection */
+                    circle(d=MAW, $fn=20);
                     translate([-i*DMAL/2/sqrt(2),DMAL/2/sqrt(2)]) rotate(i*135) square([DMAL,MAW], center=true);
                 }
             }
