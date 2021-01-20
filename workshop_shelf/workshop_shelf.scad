@@ -1,10 +1,13 @@
+/* features: space for folders, euro containers, fume extraction */
+/* folder (WxHxD): 8.5x32x29.5cm */
+
 /* simple view: */
 SIMPLE = false;
 
 /* overall dimensions: */
 H = 2000;
 W = 490;
-D = 630; /* TODO */
+D = 620;
 
 /* extrusion base dimensions: */
 EX = 30;
@@ -18,9 +21,11 @@ ECFH = 9; /* foot height */
 ECFSD = 19; /* foot size difference at each side */
 
 /* euro container stack properties: */
-ECZ0 = 500; /* Z coordinate of first container */
+ECPs = [[500,4], [1300,4]]; /* Z coordinates of first containers and number of containers */
 ECZS = ECH + 50; /* Z step for next containers */
-ECN = 8; /* number of containers */
+
+/* folder storage properties: */
+FSZ0 = 1180; /* bottom Z coordinate */
 
 module aluminumExtrusion(l) {
     echo(str("BOM:extrusion,",l));
@@ -40,6 +45,26 @@ module euroContainer() {
     }
 }
 
+module fullLayer() {
+    for (y = [0,1]) {
+        translate([EX,y*(D-EY),EX]) rotate([0,90,0]) aluminumExtrusion(W-2*EX);
+    }
+    for (x = [0,1]) {
+        translate([x*(W-EX),EY,EY]) rotate([-90,0,0]) aluminumExtrusion(D-2*EY);
+    }
+}
+
+module containerStack(z0, n) {
+    for (i = [0:n-1]) {
+        translate([
+            (W - 2*EX - ECW)/2 + EX,
+            (D - 2*EY - ECD)/2 + EY,
+            z0 + i*ECZS
+        ]) euroContainer();
+        for (j = [0,1]) translate([EX + j*(W-3*EX),0,z0 + i*ECZS + ECFH]) rotate([-90,0,0]) aluminumExtrusion(D);
+    }
+}
+
 /* vertical extrusions: */
 for (x = [0,1], y = [0,1]) {
     translate([x*(W-EX),y*(D-EY),0]) aluminumExtrusion(H);
@@ -47,20 +72,11 @@ for (x = [0,1], y = [0,1]) {
 
 /* base and top bars: */
 for (z = [0,1]) {
-    for (y = [0,1]) {
-        translate([EX,y*(D-EY),EX+z*(H-EX)]) rotate([0,90,0]) aluminumExtrusion(W-2*EX);
-    }
-    for (x = [0,1]) {
-        translate([x*(W-EX),EY,EY+z*(H-EY)]) rotate([-90,0,0]) aluminumExtrusion(D-2*EY);
-    }
+    translate([0,0,z*(H-EY)]) fullLayer();
 }
 
 /* euro containers with rails: */
-for (i = [0:ECN-1]) {
-    translate([
-        (W - 2*EX - ECW)/2 + EX,
-        (D - 2*EY - ECD)/2 + EY,
-        ECZ0 + i*ECZS
-    ]) euroContainer();
-    for (j = [0,1]) translate([EX + j*(W-3*EX),0,ECZ0 + i*ECZS + ECFH]) rotate([-90,0,0]) aluminumExtrusion(D);
-}
+for (ECP = ECPs) containerStack(ECP[0], ECP[1]);
+
+/* folder storage: */
+translate([0,0,FSZ0]) fullLayer();
