@@ -21,11 +21,11 @@ ECFH = 9; /* foot height */
 ECFSD = 19; /* foot size difference at each side */
 
 /* euro container stack properties: */
-ECPs = [[500,4], [1300,4]]; /* Z coordinates of first containers and number of containers */
-ECZS = ECH + 50; /* Z step for next containers */
+ECPs = [[720,3], [1610,2]]; /* Z coordinates of first containers and number of containers */
+ECZS = 170; /* Z step for next containers */
 
 /* folder storage properties: */
-FSZ0 = 1180; /* bottom Z coordinate */
+FSZ0 = 1220; /* bottom Z coordinate */
 
 module aluminumExtrusion(l) {
     echo(str("BOM:extrusion,",l));
