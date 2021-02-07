@@ -21,7 +21,7 @@ ECFH = 9; /* foot height */
 ECFSD = 19; /* foot size difference at each side */
 
 /* euro container stack properties: */
-ECPs = [[720,3], [1610,2]]; /* Z coordinates of first containers and number of containers */
+ECPs = [[550,4], [1610,2]]; /* Z coordinates of first containers and number of containers */
 ECZS = 170; /* Z step for next containers */
 
 /* folder storage properties: */
