@@ -17,9 +17,18 @@ PT = 1.9; /* TODO: platform thickness */
 SBD1 = 2.5; /* TODO: smaller side board dimension */
 SBD2 = 20; /* TODO: larger side board dimension */
 
+RW = 325; /* room width */
+RH = 200; /* room height */
+RD = 200; /* room depth */
+RWT = 10; /* room wall thickness */
+
+WZO = 77; /* window Z offset (floor to upper edge of window sill) */
+WW = 109; /* window width */
+WYO = [54, 216]; /* window Y offsets */
+
 /* TODO: Schlafplatz auf der Plattform (ausklappbar?) */
 /* TODO: Matratze höher setzen, Plattform niedriger, ...? */
-/* TODO: wände, kallax, fenster */
+/* TODO: kallax, window sill */
 /* TODO: oberkante matratze mit fensterbrett abschließen lassen? */
 
 /* mattress */
@@ -61,6 +70,16 @@ color("red") translate([0,0,MH-SBD2/2]) {
     }
     /* shorter side board (platform) */
     translate([-LX,(ML+LX)/2+PL,0]) cube([PW,SBD1,SBD2], center=true);
+}
+
+/* room */
+color("lightgray") translate([MW/2+LX-RD,-ML/2-LY - (RW-L)/2,-LH+MH]) difference() {
+    translate([0,-RWT,-RWT]) cube([RD+RWT,RW+2*RWT,RH+RWT]);
+    translate([-1,0,0]) cube([RD+1,RW,RH+1]);
+    /* windows */
+    for (y = WYO) {
+        translate([0,y,WZO]) cube([100*RWT,WW,2*RH]);
+    }
 }
 
 /* humans */
