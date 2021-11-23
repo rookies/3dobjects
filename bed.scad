@@ -1,5 +1,12 @@
 include <human.scad>;
 
+/*
+ * Stollenbauweise
+ * Quermutterbolzen + Holzdübel
+ * Rollbretter unter dem Bett
+ * https://www.johannes-strommer.com/rechner/balkenberechnung/
+ */
+
 /* cm */
 L = 320; /* overall length */
 MW = 140; /* mattress width */
