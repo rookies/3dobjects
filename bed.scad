@@ -4,6 +4,7 @@ include <human.scad>;
  * Stollenbauweise
  * Quermutterbolzen + Holzdübel
  * Rollbretter unter dem Bett
+ * Zugang zur Heizung zum Ablesen
  * https://www.johannes-strommer.com/rechner/balkenberechnung/
  */
 
