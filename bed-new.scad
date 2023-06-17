@@ -5,6 +5,7 @@ include <human.scad>;
  * Quermutterbolzen + Holzdübel
  * Rollbretter unter dem Bett
  * https://www.johannes-strommer.com/rechner/balkenberechnung/
+ * https://www.otto.de/p/faizee-moebel-hochbett-stauraum-hochbett-travel-artisan-eiche-parisot-S041Z02O/#variationId=S041Z02OIZ3G
  * TODO: Brett am Kopfende?
  * TODO: Beine nach oben erweitern?
  * TODO: Dach?
